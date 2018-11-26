@@ -11,80 +11,107 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingTop="15dp"
+        android:layout_weight="1"
+        android:paddingTop="28dp"
         android:text="Nykyinen lämpötila"
-        android:textSize="24dp" />
+        android:textSize="24sp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="12dp"
+        android:layout_weight="3"
+        android:padding="24dp"
         android:text="20"
         android:id="@+id/temp"
-        android:textSize="52dp" />
+        android:textSize="96sp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textSize="20sp"
+        android:paddingTop="12dp"
         android:text="Haluttu lämpötila" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:gravity="center_horizontal">
 
         <Button
+            android:id="@+id/subTemp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="-" />
+            android:minWidth="50dp"
+            android:text="-"
+            android:onClick="subTemp"/>
 
 
         <TextView
+            android:id="@+id/wantedTemp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="24sp"
             android:text="21" />
 
         <Button
+            android:id="@+id/addTemp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="+" />
+            android:minWidth="50dp"
+            android:text="+"
+            android:onClick="addTemp"/>
 
     </LinearLayout>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="20sp"
         android:text="Kello" />
 
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal">
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="-" />
 
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="10:00" />
+            android:id="@+id/mytime"
+            android:text="20:00"
+            android:focusable="false"
+            android:textSize="24sp"/>
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="3"
+        android:orientation="horizontal"
+        android:padding="40dp">
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="+" />
+            android:layout_marginRight="15dp"
+            android:text="START"
+            android:onClick="start"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:text="STOP"
+            android:onClick="stop"/>
 
     </LinearLayout>
 
-
     <TextView
+        android:layout_weight="3"
+        android:gravity="center"
+        android:id="@+id/message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Huonetta aletaan lämmittää 12min kuluttua" />
+        android:text="Lämmitys ei ole päällä\n" />
 
 
 </LinearLayout>

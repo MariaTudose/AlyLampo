@@ -1,5 +1,6 @@
 package com.example.tudose.lylmp;
 
+import android.app.TimePickerDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
@@ -14,18 +15,50 @@ import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.TextView;
+import android.widget.TimePicker;
+import android.app.TimePickerDialog;
+import android.view.View;
+
+import org.w3c.dom.Text;
 
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.Set;
 import java.util.UUID;
+import java.lang.Math;
 
 public class MainActivity extends AppCompatActivity {
+
+    double wantedTemp = 21.0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mTemp = findViewById(R.id.temp);
+
+        final TextView myTime = (TextView) findViewById(R.id.mytime);
+
+        myTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Calendar currentTime = Calendar.getInstance();
+                int hour = currentTime.get(Calendar.HOUR_OF_DAY);
+                int minute = currentTime.get(Calendar.MINUTE);
+
+                TimePickerDialog mTimePicker;
+                mTimePicker = new TimePickerDialog(MainActivity.this, new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                        myTime.setText(String.format("%02d", selectedHour) + ":" + String.format("%02d", selectedMinute));
+                    }
+                }, hour, minute, true);
+                mTimePicker.setTitle("Select Time");
+                mTimePicker.show();
+
+            }
+        });
+
 
         Handler handler = new Handler(Looper.getMainLooper()) {
             /*
@@ -59,6 +92,65 @@ public class MainActivity extends AppCompatActivity {
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         registerReceiver(mReceiver, filter);
         tryConnect();
+    }
+
+    public void displayWantedTemp(double temp) {
+        TextView tempView = (TextView) findViewById(R.id.wantedTemp);
+        tempView.setText(String.valueOf(temp));
+    }
+
+    public void addTemp(View view) {
+        if(wantedTemp < 30) wantedTemp++;
+        displayWantedTemp(wantedTemp);
+    }
+
+    public void subTemp(View view) {
+        if(wantedTemp > 15) wantedTemp--;
+        displayWantedTemp(wantedTemp);
+    }
+
+    public void start(View view) {
+        String message = "";
+
+        TextView currentTempView = findViewById(R.id.temp);
+        double currentTemp = Double.parseDouble(currentTempView.getText().toString());
+        int timeEstimate = (int) Math.abs(currentTemp - wantedTemp) * 2;
+
+        final TextView myTime = (TextView) findViewById(R.id.mytime);
+        String[] splitTime = myTime.getText().toString().split(":");
+
+        int hour1 = Integer.parseInt(splitTime[0]);
+        int minute1 = Integer.parseInt(splitTime[1]);
+
+        Calendar currentTime = Calendar.getInstance();
+        int hour2 = currentTime.get(Calendar.HOUR_OF_DAY);
+        int minute2 = currentTime.get(Calendar.MINUTE);
+
+        if (hour2 <= hour1) {
+            if(minute2 < minute1 && (minute1 - minute2) > timeEstimate) {
+                int hr = hour1 - hour2;
+                int minutes = minute1 - minute2 - timeEstimate;
+                Log.d("test", Integer.toString(minutes));
+                message = "Huoneen lämmityksessä kestää " + timeEstimate + "min\n" +
+                        "Lämmitys aloitetaan " + hr + "h " + minutes + "min kuluttua";
+            } else {
+                int hr = hour1 - hour2 - 1;
+                int minutes = 60 - (minute1 + minute2) - timeEstimate;
+                Log.d("test", Integer.toString(minutes));
+                message = "Huoneen lämmityksessä kestää " + timeEstimate + "min\n" +
+                        "Lämmitys aloitetaan " + hr + "h " + minutes + "min kuluttua";
+            }
+        } else
+            message = "Huoneen lämmityksessä kestää " + timeEstimate + "min\n" +
+                    "Lämmitys aloitetaan heti";
+
+        TextView tempView = (TextView) findViewById(R.id.message);
+        tempView.setText(String.valueOf(message));
+    }
+
+    public void stop(View view) {
+        TextView tempView = (TextView) findViewById(R.id.message);
+        tempView.setText(String.valueOf("Lämmitys ei ole päällä\n"));
     }
 
     private void tryConnect() {
