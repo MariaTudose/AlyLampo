@@ -20,6 +20,7 @@
         android:layout_height="wrap_content"
         android:padding="12dp"
         android:text="20"
+        android:id="@+id/temp"
         android:textSize="52dp" />
 
     <TextView
